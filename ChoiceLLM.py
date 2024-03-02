@@ -118,10 +118,10 @@ def continue1():
         numM = 14
 
     if numM == 15 :
-        reply = "Great. So, according to my calculations, the success rate for Option A is 70%" + " and for Option B is 30%"
+        reply = "Great. So, according to my calculations, the success rate for Option A is 84%" + " and for Option B is 75%"
         st.session_state["messages"].append({"role": "assistant", "content": reply})
         st.chat_message("assistant").write_stream(stream_data(reply))
-        success_rates = {"Option A": 0.8, "Option B": 0.6}
+        success_rates = {"Option A": 0.84, "Option B": 0.75}
         plot_success_rates(success_rates)
         numM += 1
 
