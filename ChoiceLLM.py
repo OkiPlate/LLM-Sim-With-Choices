@@ -4,46 +4,17 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 
-st.title("💬 Pepper")
-st.caption("🚀 Your business advisor/consultant")
-if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "content": "Hello, I'm Pepper and today I am going to guide you through solving a business case for Hunter LLC. But before we start, please let me know your name!"}]
-    #st.session_state["messages"].append({"role": "assistant", "content": "But before we start, please let me know your name!"})
-# Joo
-# Func for displaying messages as typing
+
+numM = 1
+
+#################################### Function to simulate typing  ####################################
 def stream_data(reply):
     for word in reply.split():
         yield word + " "
         time.sleep(0.1)
 
-# Displaying past messages
-for msg in st.session_state["messages"]:
-     st.chat_message(msg["role"]).write(msg["content"])
-
-numM = 1
-
-
-# Handling new input
-
-def introPart():
-    #Intro Messages
-    if len(st.session_state["messages"]) == 2 :
-        reply = "Nice to meet you " + str(prompt) + "! Let's go ahead and get started working on this case."
-        st.session_state["messages"].append({"role": "assistant", "content": reply})
-        st.chat_message("assistant").write_stream(stream_data(reply))
-    
-
-    if len(st.session_state["messages"]) == 3 :
-        reply = "I’ll explain a bit about the company: Hunter LLC specializes in high-value financial solutions particularly for induviduals aiming to optimize their investments. They are a big company that's been in business for a couple of years now."
-        st.session_state["messages"].append({"role": "assistant", "content": reply})
-        st.chat_message("assistant").write_stream(stream_data(reply))   
-    stillThereCheck()
-
-
-
-
-#Check if user wants to continue 
-def stillThereCheck():
+#################################### Handle Interactions  ####################################
+def interactionHandler():
     global numM 
     #Check if user wants to continue
     if len(st.session_state["messages"]) == 4 :
@@ -69,51 +40,49 @@ def stillThereCheck():
         numM = 18
         continue1()
     elif prompt.lower() == "b":
-        reply = "We will go with Option B. I will go ahead and inform the client about our decision. Thank you for the cooperation"
+        reply = "Ok, we will go with Option B. I will go ahead and inform the managers about your decision. Thank you for the cooperation"
         st.session_state["messages"].append({"role": "assistant", "content": reply})
         st.chat_message("assistant").write_stream(stream_data(reply))
         numM = 18
         continue1()
     
-
+    #################################### Graph for Success rates  ####################################
 def plot_success_rates(success_rates):
-    # Convert success rates to a DataFrame for plotting
     df = pd.DataFrame(list(success_rates.items()), columns=['Strategy', 'Success Rate'])
+    fig = px.bar(df, x='Strategy', y='Success Rate', labels={'Strategy': 'Strategy', 'Success Rate': 'Success Rate'}, title='Success Rates of Strategies',
+                 text='Success Rate',  color='Strategy', template='plotly_white')  
+    fig.update_layout(xaxis_title='Strategy',yaxis_title='Success Rate',font=dict(family='Arial, sans-serif', size=12, color='RebeccaPurple'),
+        plot_bgcolor='rgba(0,0,0,0)', yaxis=dict(range=[0,1]))
     
-    # Create the bar chart using Plotly Express with additional customizations
-    fig = px.bar(df, x='Strategy', y='Success Rate', 
-                 labels={'Strategy': 'Strategy', 'Success Rate': 'Success Rate'}, 
-                 title='Success Rates of Strategies',
-                 text='Success Rate',  # This adds the text on the bars
-                 color='Strategy',  # This assigns different colors based on the Strategy column
-                 template='plotly_white')  # This uses the 'plotly_white' template for a clean look
-    
-    # Customize the layout
-    fig.update_layout(
-        xaxis_title='Strategy',
-        yaxis_title='Success Rate',
-        font=dict(family='Arial, sans-serif', size=12, color='RebeccaPurple'),
-        plot_bgcolor='rgba(0,0,0,0)',  # Transparent background
-        yaxis=dict(range=[0,1])  # Adjust y-axis to show full range from 0 to 1
-    )
-    
-    # Customize bar appearance
-    fig.update_traces(marker_line_width=1.5, opacity=0.6)  # Add border to bars and set opacity
-    
-    # Display the plot in Streamlit
+    fig.update_traces(marker_line_width=1.5, opacity=0.6) 
     st.plotly_chart(fig)
+
+    #################################### Intro  ####################################
+def intro():
+    #Intro Messages
+    if len(st.session_state["messages"]) == 2 :
+        reply = "Nice to meet you " + str(prompt) + "! Let's go ahead and get started working on this case."
+        st.session_state["messages"].append({"role": "assistant", "content": reply})
+        st.chat_message("assistant").write_stream(stream_data(reply))
     
-# Main Body 1
+
+    if len(st.session_state["messages"]) == 3 :
+        reply = "I’ll explain a bit about the company: Hunter LLC is a big player in the construction segment in the US. They have been in this industry for a long time and lately they have been looking for some new opportunities."
+        st.session_state["messages"].append({"role": "assistant", "content": reply})
+        st.chat_message("assistant").write_stream(stream_data(reply))   
+    interactionHandler()
+
+#################################### Conversation  ####################################
 def continue1():
     global numM      
     if numM == 6 :
-        reply = "Great! Let's move on. We have a new client that has recently joined us and is looking forward to new investments. Recently we discussed the annual financial targets , setting the goals fo the upcoming year"
+        reply = "Great! Let's move on. After their last annual meeting, they decided they want to make some new investments. Therefore, they have discussed the annual financial targets, setting the goals fo the upcoming year"
         st.session_state["messages"].append({"role": "assistant", "content": reply})
         st.chat_message("assistant").write_stream(stream_data(reply))
         numM = 8
 
     if numM == 8 :
-        reply = "To achieve these, we've been evaluating various strategies and have narrowed down to two distinct strategies. However, we were hoping you could help us to finalize our approach."
+        reply = "To achieve these, we've been evaluating different strategies and have narrowed down to two distinct options. However, we were hoping you could help us to finalize our approach."
         st.session_state["messages"].append({"role": "assistant", "content": reply})
         st.chat_message("assistant").write_stream(stream_data(reply))
         numM += 1
@@ -169,10 +138,24 @@ def continue1():
     
         
 
-
+#################################### Main  ####################################
 prompt = st.chat_input()
+
+st.title("💬 Pepper")
+st.caption("🚀 Your business advisor/consultant")
+
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [{"role": "assistant", "content": "Hello, "
+                                    + "I'm Pepper and today I am going to guide you through solving a business " 
+                                    + "case for Hunter LLC. But before we start, please let me know your name!"}]
+
+for msg in st.session_state["messages"]:
+     st.chat_message(msg["role"]).write(msg["content"])
 
 if prompt:
     st.session_state["messages"].append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
-    introPart()
+    intro()
+
+
+
