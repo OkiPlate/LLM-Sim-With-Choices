@@ -14,4 +14,4 @@ This simulator includes features like stream writing which simulates as if the L
 virtualenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-streamlit run LLMsim.py
+streamlit run ChoiceLLM.py
