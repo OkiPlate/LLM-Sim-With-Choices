@@ -94,13 +94,13 @@ def continue1():
         numM += 1
 
     if numM == 10 :
-        reply = "Option A: This option is safer and grows your money slowly. It’s like putting your money in a safe place where it can grow bit by bit."
+        reply = "Option A: This option and grows your money slowly. It’s like putting your money in a safe place where it can grow bit by bit."
         st.session_state["messages"].append({"role": "assistant", "content": reply})
         st.chat_message("assistant").write_stream(stream_data(reply))
         numM += 1
 
     if numM == 11 :
-        reply = "Option B: This option is for taking chances to possibly make more money. It's riskier, but it could lead to better results."
+        reply = "Option B: This option is for taking chances to possibly make more money. It's an alternate strategy, but it could lead to better results."
         st.session_state["messages"].append({"role": "assistant", "content": reply})
         st.chat_message("assistant").write_stream(stream_data(reply))
         numM += 1
