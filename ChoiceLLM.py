@@ -132,9 +132,15 @@ def continue1():
         numM = 17
 
     if numM == 18 :
+        reply = "An agent will be bringing you a document with the results soon, please wait"
+        st.session_state["messages"].append({"role": "assistant", "content": reply})
+        st.chat_message("assistant").write_stream(stream_data(reply))
+        numM = 19
+
+    if numM == 19 :
         reply = "Thank you for your time and cooperation.  Have a great day!"
         st.session_state["messages"].append({"role": "assistant", "content": reply})
-        st.chat_message("assistant").write(reply)
+        st.chat_message("assistant").write_stream(stream_data(reply))
     
         
 
